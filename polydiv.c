@@ -21,11 +21,9 @@ void polydiv_loop(int base, int *digits, int step) {
 	for(i = step - mpz_fdiv_ui(loop_base[step], step); i<base; i+=step) {
 		if(digits[i]) {
 			mpz_add_ui(values[step], loop_base[step], i);
-			if(mpz_divisible_ui_p(values[step], step)) {
-				digits[i]=0;
-				polydiv_loop(base, digits, step+1);
-				digits[i]=1;
-			}
+			digits[i]=0;
+			polydiv_loop(base, digits, step+1);
+			digits[i]=1;
 		}
 	}
 }
