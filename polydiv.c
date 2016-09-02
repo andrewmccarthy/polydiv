@@ -2,40 +2,37 @@
 #include <stdlib.h>
 #include <gmp.h>
 
-void polydiv_loop(int base, mpz_t value, int *digits, int step) {
+mpz_t *loop_base, *values;
+
+void polydiv_loop(int base, int *digits, int step) {
 	int i;
-	mpz_t base_loop_value, loop_value;
 
 	if (step == base) {
 		if (base > 62) {
-			printf("* %s\n", mpz_get_str(NULL, 10, value));
+			printf("* %s\n", mpz_get_str(NULL, 10, values[step-1]));
 		} else {
-			printf("%s %s\n", mpz_get_str(NULL, base, value),
-					mpz_get_str(NULL, 10, value));
+			printf("%s %s\n", mpz_get_str(NULL, base, values[step-1]),
+					mpz_get_str(NULL, 10, values[step-1]));
 		}
 	}
 
-	mpz_init_set(base_loop_value, value);
-	mpz_mul_ui(base_loop_value, base_loop_value, base);
-	mpz_init(loop_value);
+	mpz_mul_ui(loop_base[step], values[step-1], base);
 
 	for(i=1; i<base; i++) {
 		if(digits[i]) {
-			mpz_add_ui(loop_value, base_loop_value, i);
-			if(mpz_divisible_ui_p(loop_value, step)) {
+			mpz_add_ui(values[step], loop_base[step], i);
+			if(mpz_divisible_ui_p(values[step], step)) {
 				digits[i]=0;
-				polydiv_loop(base, loop_value, digits, step+1);
+				polydiv_loop(base, digits, step+1);
 				digits[i]=1;
 			}
 		}
 	}
-    mpz_clears(base_loop_value, loop_value, NULL);
 }
 
 void polydiv_start(int base) {
 	int i;
 	int *digits;
-	mpz_t value;
 
 	// Allocate digits list
 	digits = malloc(sizeof(int) * base);
@@ -44,9 +41,14 @@ void polydiv_start(int base) {
 	}
 
 	// Create multi-precision int
-	mpz_init(value);
+    values = malloc(sizeof(mpz_t) * (base + 1));
+    loop_base = malloc(sizeof(mpz_t) * (base + 1));
+	for (i=0; i<base; i++) {
+        mpz_init(values[i]);
+        mpz_init(loop_base[i]);
+	}
 
-	polydiv_loop(base, value, digits, 1);
+	polydiv_loop(base, digits, 1);
 }
 
 int main(int argc, char *argv[]) {
