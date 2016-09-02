@@ -39,11 +39,11 @@ void polydiv_start(int base) {
 	}
 
 	// Create multi-precision int
-    values = malloc(sizeof(mpz_t) * (base + 1));
-    loop_base = malloc(sizeof(mpz_t) * (base + 1));
+	values = malloc(sizeof(mpz_t) * (base + 1));
+	loop_base = malloc(sizeof(mpz_t) * (base + 1));
 	for (i=0; i<base; i++) {
-        mpz_init(values[i]);
-        mpz_init(loop_base[i]);
+		mpz_init(values[i]);
+		mpz_init(loop_base[i]);
 	}
 
 	polydiv_loop(base, digits, 1);
@@ -51,16 +51,19 @@ void polydiv_start(int base) {
 
 int main(int argc, char *argv[]) {
 	int base;
+	int i;
 
-	if (argc != 2) {
+	if (argc < 2) {
 		fprintf(stderr, "Requires base on command line.\n");
 		exit(1);
 	}
 
-	sscanf(argv[1], "%d", &base);
-	printf("Testing base %d...\n", base);
+	for(i=1; i<argc; i++) {
+		sscanf(argv[i], "%d", &base);
+		printf("Testing base %d...\n", base);
 
-	polydiv_start(base);
+		polydiv_start(base);
+	}
 
 	exit(0);
 }
