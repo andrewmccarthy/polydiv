@@ -19,9 +19,10 @@ command-line. It requires [numpy](http://www.numpy.org/) only because I'm too
 lazy to write my own version of
 [`numpy.base_repr`](http://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.base_repr.html).
 
-As the base increases the run-time increases substantially (more-or-less
-exponentially, I'm guessing). You may want to write something more efficient in
-C if you really want answers for higher bases.
+*Update* —  I've translated the Python into C (using the [GNU Multiple
+Precision Arithmetic Library](https://gmplib.org/)). The initial C version was
+6 times faster than the very-unoptimised Python.  Some simple optimisations
+made it about 49 times faster than Python.
 
 ## Output
 
